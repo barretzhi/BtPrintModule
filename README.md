@@ -4,6 +4,128 @@
 
 APICloud 的 BtPrintModule 模块是一个蓝牙打印机模块。官方提供的ble是低功耗的蓝牙，但是有的蓝牙2.0小票机不支持，所以我就写了一个可能代码很烂大家能用就用啊！好的话给个star啊！
 
+
+
+##完整示例代码
+
+```js
+			var BtPrintModule = null;
+			var	blestauts = false;
+			var intervalidState = false;
+			var	intervalid;
+			var isconInterStatus = false;
+			var isconInter;
+			//蓝牙模块初始化
+			var bleInit = function() {
+					BtPrintModule.initBT(function(ret, err) {
+						alert(JSON.stringify(ret));
+						alert(JSON.stringify(err));
+					});
+				}
+			//扫描蓝牙设备
+			var scanBle = function() {
+					//搜索附近未配对设备
+					BtPrintModule.scanBT();
+					if(intervalidState){
+						return;
+					}
+					intervalid = setInterval(function() {
+						getBle();
+					}, 2000);
+					//获取已匹配
+					BtPrintModule.hostoryBt(function(ret) {
+						if(ret) {
+							if(ret.service.length > 0) {
+								var render = Y.tppl($("#tpplhestory").html(), ret);
+								$(".list_hestory").html(render);
+							}
+						}
+					});
+				}
+			//获取扫描的蓝牙
+			var getBle = function() {
+					BtPrintModule.serviceBT(function(ret, err) {
+						if(ret) {
+							if(intervalidState){
+								clearInterval(intervalid);
+								intervalidState = false;
+							}
+							if(ret.code == 0) {
+								clearInterval(intervalid);
+								$('.selectly-text').text('查找完毕');
+								$('.selectly-num').text('发现' + ret.service.length + '个蓝牙设备');
+								$('.icon-lanya').removeClass('lanya');
+								if(ret.service.length > 0) {
+									var render = Y.tppl($("#tppl").html(), ret);
+									$(".list").html(render);
+								}
+							}else{
+								if(ret){
+								}
+							}
+						}
+					});
+				}
+			//点击开始蓝牙扫描
+			var selectLanya = function(e) {
+					if(!blestauts) {
+						$(e.target).toggleClass('lanya')
+						if($(e.target).hasClass('lanya')) {
+							$('.selectly-text').text('查找中....');
+							$('.selectly-num').text('发现0个蓝牙设备');
+							//开始扫描
+							scanBle();
+							intervalidState = false;
+						} else {
+							scanBle();
+							intervalidState = true;
+							$('.selectly-text').text('查找完毕');
+							$('.selectly-num').text('点击可重新查找');
+						}
+					}
+				}
+			//蓝牙设备连接
+			var connectLanya = function(address,name) {
+					if(address != null) {
+						BtPrintModule.connectBt({
+							address: address
+						});
+					}
+					Y.toastLoading(10000,"连接中...");
+					isconInterStatus = true;
+					if(!isconInterStatus){
+						return;
+					}
+					isconInter = setInterval(function() {
+						isconnect(name);
+					}, 2000);
+				}
+			//是否连接成功
+			var isconnect = function(name) {
+					BtPrintModule.isconnect(function(ret) {
+						if(ret.code == 0) {
+							isconInterStatus = false;
+							clearInterval(isconInter);
+							Y.closeToast();
+							$('.isconnect'+name).html("已连接");
+						}else if(ret.code == 4){
+							clearInterval(isconInter);
+							Y.closeToast();
+						}
+					});
+				}
+			//打印测试
+			var printTest = function() {
+				BtPrintModule.writeBT({writeStr:"打印测试/n/n/n"});
+			}
+			api.ready(function() {
+				//蓝牙模块导入
+				BtPrintModule = api.require('BtPrintModule');
+				//初始化
+				bleInit();
+			});
+```
+
 <ul id="tab" class="clearfix">
 	<li class="active"><a href="#method-content">Method</a></li>
 </ul>
@@ -212,6 +334,7 @@ foods:
     	money: ''  //菜品单价
     },...]
 }
+```
 
 storeName：
 
@@ -266,125 +389,3 @@ ret:
     msg：''				//字符串类型： 返回消息
 }
 ```
-
-##示例代码
-
-```js
-var BtPrintModule = null;
-			var	blestauts = false;
-			var intervalidState = false;
-			var	intervalid;
-			var isconInterStatus = false;
-			var isconInter;
-			//蓝牙模块初始化
-			var bleInit = function() {
-					BtPrintModule.initBT(function(ret, err) {
-						alert(JSON.stringify(ret));
-						alert(JSON.stringify(err));
-					});
-				}
-			//扫描蓝牙设备
-			var scanBle = function() {
-					//搜索附近未配对设备
-					BtPrintModule.scanBT();
-					if(intervalidState){
-						return;
-					}
-					intervalid = setInterval(function() {
-						getBle();
-					}, 2000);
-					//获取已匹配
-					BtPrintModule.hostoryBt(function(ret) {
-						if(ret) {
-							if(ret.service.length > 0) {
-								var render = Y.tppl($("#tpplhestory").html(), ret);
-								$(".list_hestory").html(render);
-							}
-						}
-					});
-				}
-			//获取扫描的蓝牙
-			var getBle = function() {
-					BtPrintModule.serviceBT(function(ret, err) {
-						if(ret) {
-							if(intervalidState){
-								clearInterval(intervalid);
-								intervalidState = false;
-							}
-							if(ret.code == 0) {
-								clearInterval(intervalid);
-								$('.selectly-text').text('查找完毕');
-								$('.selectly-num').text('发现' + ret.service.length + '个蓝牙设备');
-								$('.icon-lanya').removeClass('lanya');
-								if(ret.service.length > 0) {
-									var render = Y.tppl($("#tppl").html(), ret);
-									$(".list").html(render);
-								}
-							}else{
-								if(ret){
-								}
-							}
-						}
-					});
-				}
-			//点击开始蓝牙扫描
-			var selectLanya = function(e) {
-					if(!blestauts) {
-						$(e.target).toggleClass('lanya')
-						if($(e.target).hasClass('lanya')) {
-							$('.selectly-text').text('查找中....');
-							$('.selectly-num').text('发现0个蓝牙设备');
-							//开始扫描
-							scanBle();
-							intervalidState = false;
-						} else {
-							scanBle();
-							intervalidState = true;
-							$('.selectly-text').text('查找完毕');
-							$('.selectly-num').text('点击可重新查找');
-						}
-					}
-				}
-			//蓝牙设备连接
-			var connectLanya = function(address,name) {
-					if(address != null) {
-						BtPrintModule.connectBt({
-							address: address
-						});
-					}
-					Y.toastLoading(10000,"连接中...");
-					isconInterStatus = true;
-					if(!isconInterStatus){
-						return;
-					}
-					isconInter = setInterval(function() {
-						isconnect(name);
-					}, 2000);
-				}
-			//是否连接成功
-			var isconnect = function(name) {
-					BtPrintModule.isconnect(function(ret) {
-						if(ret.code == 0) {
-							isconInterStatus = false;
-							clearInterval(isconInter);
-							Y.closeToast();
-							$('.isconnect'+name).html("已连接");
-						}else if(ret.code == 4){
-							clearInterval(isconInter);
-							Y.closeToast();
-						}
-					});
-				}
-			//打印测试
-			var printTest = function() {
-				BtPrintModule.writeBT({writeStr:"打印测试/n/n/n"});
-			}
-			api.ready(function() {
-				//蓝牙模块导入
-				BtPrintModule = api.require('BtPrintModule');
-				//初始化
-				bleInit();
-			});
-```
-
-
