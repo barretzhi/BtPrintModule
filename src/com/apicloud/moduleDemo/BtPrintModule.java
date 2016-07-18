@@ -161,9 +161,9 @@ public class BtPrintModule extends UZModule {
 	public void jsmethod_serviceBT(UZModuleContext moduleContext) {
 		JSONObject ret = new JSONObject();
 		try {
-			if (scanStatus.getString("status") != null
-					&& scanStatus.getBoolean("status")) {
+			if (scanStatus.getString("status") != null) {
 				ret.put("code", 0);
+				ret.put("status", scanStatus);
 				ret.put("service", mNewDevicesArrayAdapter);
 				moduleContext.success(ret, true);
 				// Make sure we're not doing discovery anymore
@@ -172,7 +172,6 @@ public class BtPrintModule extends UZModule {
 				}
 			} else {
 				ret.put("code", 1);
-				ret.put("status", scanStatus);
 				moduleContext.success(ret, true);
 			}
 			
@@ -244,7 +243,8 @@ public class BtPrintModule extends UZModule {
 		mService.printReset();
 		mService.print(17);
 		mService.printCenter();
-		mService.write(strTobyte("DEMO"));
+		String storeName = moduleContext.isNull("storeName") ? " " : moduleContext.optString("storeName");
+		mService.write(strTobyte(storeName));
 		mService.write(strTobyte("\n"));
 		//桌号
 		mService.printSize(2);
@@ -407,8 +407,8 @@ public class BtPrintModule extends UZModule {
 						scanStatus.put("status", false);
 					} else {
 						scanStatus.put("status", true);
-						mContext.unregisterReceiver(mReceiver);
 					}
+					mContext.unregisterReceiver(mReceiver);
 				} catch (Exception e) {
 					// TODO: handle exception
 					e.printStackTrace();
