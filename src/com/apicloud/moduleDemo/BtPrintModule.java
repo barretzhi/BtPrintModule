@@ -210,6 +210,15 @@ public class BtPrintModule extends UZModule {
 	public void jsmethod_isconnect(UZModuleContext moduleContext){
 			moduleContext.success(isconnectStatus, true);
 	}
+
+	/**
+	 * @name 关闭扫描
+	 */
+	public void jsmethod_disscanBT(){
+			mBluetoothAdapter.cancelDiscovery();
+			mContext.unregisterReceiver(mReceiver);
+	}
+	
 	/**
 	 * @name 写入字符串
 	 * @param moduleContext
