@@ -2,8 +2,8 @@
 
 蓝牙打印模块（只支持Android）
 
-APICloud 的 BtPrintModule 模块是一个蓝牙打印机模块。官方提供的ble是低功耗的蓝牙，但是有的蓝牙2.0小票机不支持，所以我就写了一个可能代码很烂大家能用就用啊！好的话给个star啊！
-
+APICloud 的 BtPrintModule 模块是一个蓝牙打印机模块。官方提供的ble是低功耗的蓝牙，但是有的蓝牙2.0小票机不支持，所以我就写了一个可能代码很烂大家能用就用啊！
+好的话给个star啊！话不多说先上完整示例代码，再介绍具体文档。
 
 
 ##完整示例代码
@@ -91,7 +91,6 @@ APICloud 的 BtPrintModule 模块是一个蓝牙打印机模块。官方提供�
 							address: address
 						});
 					}
-					Y.toastLoading(10000,"连接中...");
 					isconInterStatus = true;
 					if(!isconInterStatus){
 						return;
@@ -106,7 +105,6 @@ APICloud 的 BtPrintModule 模块是一个蓝牙打印机模块。官方提供�
 						if(ret.code == 0) {
 							isconInterStatus = false;
 							clearInterval(isconInter);
-							Y.closeToast();
 							$('.isconnect'+name).html("已连接");
 						}else if(ret.code == 4){
 							clearInterval(isconInter);
@@ -125,7 +123,7 @@ APICloud 的 BtPrintModule 模块是一个蓝牙打印机模块。官方提供�
 				bleInit();
 			});
 ```
-
+**-------------------------------------**
 <ul id="tab" class="clearfix">
 	<li class="active"><a href="#method-content">Method</a></li>
 </ul>
@@ -141,7 +139,7 @@ APICloud 的 BtPrintModule 模块是一个蓝牙打印机模块。官方提供�
 [writeBT](#7)
 [sendMessageBT](#8)
 </div>
-
+**-------------------------------------**
 
 **模块接口**
 
