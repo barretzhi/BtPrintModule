@@ -1,0 +1,10 @@
+<widget id="A0000000000001"  version="0.0.1">
+    <name>BtPrintModule</name>
+    <description>A sample of APICloud BtPrintModule.</description>
+    <author email="barret.zhi@gmail.com" href="http://www.apicloud.com">
+        barret.zhi
+    </author>
+    <content src="index.html" />
+    <access origin="*" />
+    <preference name="debug" value="true"/>  
+</widget>

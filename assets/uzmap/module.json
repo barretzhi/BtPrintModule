@@ -1,0 +1,8 @@
+{
+	modules:[
+		{
+		    name:'BtPrintModule',
+		    class:'com.apicloud.moduleDemo.BtPrintModule'
+		}
+	]
+}
